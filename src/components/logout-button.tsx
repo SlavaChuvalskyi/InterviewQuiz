@@ -1,17 +1,17 @@
 'use client'
 
-import { createClient } from '@/lib/client'
-import { Button } from '@/components/ui/button'
-import { useRouter } from 'next/navigation'
+import {createClient} from '@/lib/client'
+import {Button} from '@/components/ui/button'
+import {useRouter} from 'next/navigation'
 
 export function LogoutButton() {
-  const router = useRouter()
+    const router = useRouter()
 
-  const logout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/auth/login')
-  }
+    const logout = async () => {
+        const supabase = createClient()
+        await supabase.auth.signOut()
+        router.push('/')
+    }
 
-  return <Button onClick={logout}>Logout</Button>
+    return <Button id={'logout'} className={'cursor-pointer'} onClick={logout}>Logout</Button>
 }

@@ -27,11 +27,11 @@
       "@/*": [
         "./src/*"
       ],
-      "@shared/*": [
-        "./src/shared/*"
-      ],
       "@lib/*": [
         "./src/lib/*"
+      ],
+      "@stores/*": [
+        "./src/stores/*"
       ]
     }
   },
