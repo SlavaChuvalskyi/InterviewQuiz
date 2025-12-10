@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState, useRef, useEffectEvent, ReactEventHandler} from "react";
+import {useEffect, useState, useRef, useEffectEvent} from "react";
 import Link from "next/link";
 import {AppIcon} from "@/ui/icon";
 import {LogoutButton} from "@/components/logout-button";
@@ -20,7 +20,7 @@ export default function UserMenu({user}: MenuProps) {
         // Make sure target is an HTMLElement
         const target = e.target as HTMLElement | null;
 
-        if (popover_node && (!popover_node.contains((target as Node)) || target?.id === 'logout')) {
+        if (popover_node && (!popover_node.contains((target as Node)) || target?.id === 'logout' || target?.baseURI)) {
             e.preventDefault();
             e.stopPropagation();
             setIsUserMenuOpen(false);
@@ -47,7 +47,7 @@ export default function UserMenu({user}: MenuProps) {
                 }}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--primary)] text-white font-semibold hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
             >
-                {user && user.username ? user.username.slice(0, 4) : <span><AppIcon name="user" size={20}/></span>}
+                {user && user.username ? user.username.slice(0, 3) : <span><AppIcon name="user" size={20}/></span>}
             </button>
 
             {/* Dropdown Menu */}

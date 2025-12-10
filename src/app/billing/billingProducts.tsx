@@ -4,6 +4,7 @@ import {useUserStore} from "@stores/userStore";
 import {Grid} from "@/components/ui/grid";
 import {CardContent} from "@/components/ui/card";
 import {ProductDisplay} from "@/app/billing/product";
+import {redirect} from "next/navigation";
 
 type ProductProps = {
     plans: StripePlan[],
@@ -14,13 +15,16 @@ export function BillingProducts({products, plans}: ProductProps) {
 
     const user: UserProfile | null = useUserStore((state) => state.user)
 
-    console.log('user = ', user)
+    if (!user) {
+        redirect('/auth/login')
+    }
 
+        console.log('BillingProducts user = ', user)
     return (
         <Grid className="grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-4 justify-center place-items-center">
-            {products.map((product:any) => {
+            {products.map((product:StripeProduct) => {
 
-                const plan: StripePlan | undefined = plans.find((item:any) => item.product === product.id);
+                const plan: StripePlan | undefined = plans.find((item:StripePlan) => item.product === product.id);
 
                 if (!plan) {
                     return null;

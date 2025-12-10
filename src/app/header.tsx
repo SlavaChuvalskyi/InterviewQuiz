@@ -18,7 +18,6 @@ export default function Header() {
                 </Link>
             </div>
 
-
             <div className="flex gap-3">
                 {!user ? <>
                     <Link href="/auth/login">

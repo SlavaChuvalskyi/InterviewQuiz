@@ -25,8 +25,6 @@ export default function Select(props: SelectProps) {
         disabled = false
     } = props;
 
-    console.log("selectedOption = ", selectedOption);
-
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         if (onChangeAction) {
             onChangeAction(e);

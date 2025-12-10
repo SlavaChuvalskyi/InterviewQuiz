@@ -5,21 +5,23 @@ import {CheckoutButton} from "@/components/ui/checkout-button";
 type ProductProps = {
     plan: StripePlan,
     product: StripeProduct,
-    user: UserProfile | null,
+    user: UserProfile,
 }
 
 export function ProductDisplay({product, plan, user}: ProductProps) {
 
     console.log("product = ", product)
+    console.log("plan = ", plan)
 
     return (
         <section
             className={`max-w-sm rounded-2xl shadow-md p-6 flex flex-col gap-4 transition-shadow duration-300
-    ${
+                ${
                 user?.stripe_subscription_id === plan.id
                     ? 'bg-blue-50 border-2 border-blue-400 shadow-lg' // Highlight current plan
                     : 'bg-white hover:shadow-lg'
-            }`}
+                }`
+            }
         >
             {/* Header */}
             <div className="flex items-center gap-4">
@@ -56,7 +58,7 @@ export function ProductDisplay({product, plan, user}: ProductProps) {
 
             {/* Checkout button centered */}
             <div className="mt-6 flex justify-center">
-                <CheckoutButton priceId={plan.id} customerId={user?.id ?? null} />
+                <CheckoutButton priceId={plan.id} customerId={user.stripe_customer_id} />
             </div>
         </section>
 

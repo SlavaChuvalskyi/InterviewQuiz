@@ -4,11 +4,9 @@ import {UserProfile} from "@/app/types";
 interface UserState {
     user: UserProfile | null
     setUser: (user: any | null) => void
-    clearUser: () => void
 }
 
 export const useUserStore = create<UserState>((set) => ({
     user: null,
     setUser: (user) => set({ user }),
-    clearUser: () => set({ user: null }),
 }))
