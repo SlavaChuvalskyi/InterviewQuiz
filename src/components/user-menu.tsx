@@ -1,16 +1,17 @@
 'use client'
 
-import {useEffect, useState, useRef, useEffectEvent} from "react";
+import { useEffect, useState, useRef, useEffectEvent } from "react";
 import Link from "next/link";
-import {AppIcon} from "@/ui/icon";
-import {LogoutButton} from "@/components/logout-button";
-import {UserProfile} from "@/app/types";
+import { Button } from '@/components/ui/button-custom';
+import { AppIcon } from "@/components/ui/icon";
+import { LogoutButton } from "@/components/logout-button";
+import { UserProfile } from "@/app/types";
 
 type MenuProps = {
     user: UserProfile | null
 }
 
-export default function UserMenu({user}: MenuProps) {
+export default function UserMenu({ user }: MenuProps) {
 
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -47,7 +48,7 @@ export default function UserMenu({user}: MenuProps) {
                 }}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--primary)] text-white font-semibold hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
             >
-                {user && user.username ? user.username.slice(0, 3) : <span><AppIcon name="user" size={20}/></span>}
+                {user && user.username ? user.username.slice(0, 3) : <span><AppIcon name="user" size={20} /></span>}
             </button>
 
             {/* Dropdown Menu */}
@@ -62,19 +63,19 @@ export default function UserMenu({user}: MenuProps) {
 
                     <div className="py-2">
                         <Link href="/profile"
-                              className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--secondary)] transition-colors">
-                            <AppIcon name="user" size={16}/>
+                            className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--secondary)] transition-colors">
+                            <AppIcon name="user" size={16} />
                             <span>Profile</span>
                         </Link>
                         <Link href="/billing"
-                              className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--secondary)] transition-colors">
-                            <AppIcon name="credit-card" size={16}/>
+                            className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--foreground)] hover:bg-[var(--secondary)] transition-colors">
+                            <AppIcon name="credit-card" size={16} />
                             <span>Billing</span>
                         </Link>
                     </div>
 
                     <div className="border-t border-[var(--border)] py-3 text-center cursor-pointer">
-                        <LogoutButton/>
+                        <LogoutButton />
                     </div>
                 </div>
             )}

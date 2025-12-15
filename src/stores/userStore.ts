@@ -1,12 +1,16 @@
 import { create } from 'zustand'
-import {UserProfile} from "@/app/types";
+import {UserProfile, UserSubscription} from "@/app/types";
 
 interface UserState {
     user: UserProfile | null
-    setUser: (user: any | null) => void
+    userSubscription: UserSubscription | null
+    setUser: (user: UserProfile | null) => void
+    setUserSubscription: (userSubscription: UserSubscription | null) => void
 }
 
 export const useUserStore = create<UserState>((set) => ({
     user: null,
-    setUser: (user) => set({ user }),
+    userSubscription: null,
+    setUser: (user:UserProfile | null) => set({ user }),
+    setUserSubscription: (userSubscription: UserSubscription | null ) => set({ userSubscription }),
 }))

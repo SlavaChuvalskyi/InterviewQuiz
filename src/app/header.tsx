@@ -1,9 +1,9 @@
 'use client'
 import Link from "next/link";
-import {Button} from "@/ui/button";
+import { Button } from "@/components/ui/button-custom";
 import UserMenu from "@/components/user-menu";
 import { useUserStore } from '@/stores/userStore'
-import {UserProfile} from "@/app/types";
+import { UserProfile } from "@/app/types";
 
 export default function Header() {
 
@@ -29,7 +29,7 @@ export default function Header() {
                 </> : null}
 
                 {/* User Menu */}
-                <UserMenu user={user}/>
+                <UserMenu user={user} />
             </div>
         </header>
     );

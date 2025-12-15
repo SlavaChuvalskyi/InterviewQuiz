@@ -4,6 +4,10 @@ export interface BillingData {
     products: StripeProduct[]
 }
 
+export type PriceData = {
+    price: string,
+    quantity: number,
+}
 
 export interface StripeProduct {
     id: string;
@@ -52,10 +56,27 @@ export interface UserProfile {
     username: string
     created_at: string // ISO date string
     updated_at: string // ISO date string
-    stripe_customer_id: string
-    stripe_subscription_id: string
     email?: string
-    full_name?: string
-    phone?: string
+    subscriptions: UserSubscription
     [key: string]: any // for any additional fields that might be present
+}
+
+export interface UserSubscription {
+    id: string;
+    status?: 'incomplete' | 'incomplete_expired' | 'trialing' | 'active' | 'past_due' | 'canceled' | 'unpaid' | 'pause';
+    stripe_customer_id?: string;
+    stripe_subscription_id?: string;
+    stripe_plan_id?: string;
+    planID?: string;
+    planInterval?: "day" | "week" | "month" | "year";
+    planAmount?: number;
+    productID?: string;
+    productName?: string;
+    start_date?: number | undefined,
+    ended_at?: number | undefined,
+    cancel_at?: number | undefined,
+    cancel_at_period_end?: boolean,
+    canceled_at?: number | undefined,
+    current_period_end?: number | undefined,
+    currency?: string,
 }

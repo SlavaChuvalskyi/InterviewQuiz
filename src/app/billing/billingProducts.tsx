@@ -1,39 +1,42 @@
 'use client'
-import {StripePlan, StripeProduct, UserProfile} from "@/app/types";
-import {useUserStore} from "@stores/userStore";
-import {Grid} from "@/components/ui/grid";
-import {CardContent} from "@/components/ui/card";
-import {ProductDisplay} from "@/app/billing/product";
-import {redirect} from "next/navigation";
+import { StripePlan, StripeProduct } from "@/app/types";
+import { useUserStore } from "@stores/userStore";
+import { Grid } from "@/components/ui/grid";
+import { CardContent } from "@/components/ui/card";
+import { ProductDisplay } from "@/app/billing/productDisplay";
+import { redirect } from "next/navigation";
 
 type ProductProps = {
     plans: StripePlan[],
     products: StripeProduct[],
 }
 
-export function BillingProducts({products, plans}: ProductProps) {
+export function BillingProducts({ products, plans }: ProductProps) {
 
-    const user: UserProfile | null = useUserStore((state) => state.user)
+    const userState = useUserStore((state) => state);
+    const user = userState.user;
+    const userSubscription = userState.userSubscription;
 
     if (!user) {
         redirect('/auth/login')
     }
 
-        console.log('BillingProducts user = ', user)
+    console.log('update billing page = ', user)
+
     return (
-        <Grid className="grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-4 justify-center place-items-center">
-            {products.map((product:StripeProduct) => {
+        <Grid className="grid-cols-1 lg:grid-cols-3 gap-8 items-start max-w-7xl mx-auto w-full">
+            {plans.map((plan: StripePlan) => {
 
-                const plan: StripePlan | undefined = plans.find((item:StripePlan) => item.product === product.id);
+                const product: StripeProduct | undefined = products.find((item: StripeProduct) => item.id === plan.product);
 
-                if (!plan) {
+                if (!product) {
                     return null;
                 }
 
                 return (
-                    <CardContent key={product.id}>
-                        <ProductDisplay product={product} plan={plan} user={user}/>
-                    </CardContent>)
+                    <div key={product.id} className="w-full h-full flex">
+                        <ProductDisplay product={product} plan={plan} user={user} userSubscription={userSubscription} />
+                    </div>)
             })}
         </Grid>
     )

@@ -1,6 +1,0 @@
-import { create } from 'zustand'
-
-export const useAppStore = create((set) => ({
-  appLoading: true,
-  setAppLoading: (appLoading) => set((state) => ({ appLoading })),
-}))

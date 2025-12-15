@@ -1,8 +1,8 @@
 'use client'
 
-import {cn} from '@/lib/utils'
-import {createClient, createClientStripe} from '@/lib/client'
-import {Button} from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { createClient, createClientStripe, updateSupebaseProfile, updateSupebaseUserSubscription } from '@/lib/client'
+import { Button } from '@/components/ui/button'
 import {
     Card,
     CardContent,
@@ -10,20 +10,32 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
-import {Input} from '@/components/ui/input'
-import {Label} from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import {useRouter} from 'next/navigation'
-import {useState} from 'react'
+import { redirect } from 'next/navigation'
+import { useState } from 'react'
+import { useToast } from "@/components/ui/toast";
+import { useUserStore } from "@stores/userStore";
+import { UserProfile } from "@/app/types";
 
-export function SignUpForm({className, ...props}: React.ComponentPropsWithoutRef<'div'>) {
-    const [username, setUsername] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [repeatPassword, setRepeatPassword] = useState('')
+export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+    const [username, setUsername] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [repeatPassword, setRepeatPassword] = useState<string>('')
     const [error, setError] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(false)
-    const router = useRouter()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const { showToast } = useToast()
+
+    const userState = useUserStore((state) => state);
+    const user: UserProfile | null = userState.user;
+    const setUser = userState.setUser;
+    const setUserSubscription = userState.setUserSubscription;
+
+    if (user) {
+        redirect('/')
+    }
 
     const handleSignUp = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -38,18 +50,18 @@ export function SignUpForm({className, ...props}: React.ComponentPropsWithoutRef
         }
 
         try {
-            const authResponse = await supabase.auth.signUp({
+            const { data: authData, error: authError } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
-                    data: {username},
-                    emailRedirectTo: `${window.location.origin}/protected`,
+                    data: { username },
+                    emailRedirectTo: `${window.location.origin}`,
                 },
             })
 
-            if (authResponse?.error) throw authResponse.error;
+            if (authError) throw authError;
 
-            const userID = authResponse.data?.user?.id ?? null;
+            const userID = authData?.user?.id ?? null;
 
             if (!userID) {
                 setError('Cannot get user data!')
@@ -58,12 +70,13 @@ export function SignUpForm({className, ...props}: React.ComponentPropsWithoutRef
             }
 
             // 1. Create Supabase profile
-            const profileResponse = await supabase.from("profiles").insert({
+            const { data: profile, error: profileError } = await supabase.from("profiles").insert({
                 id: userID,
                 username,
-            })
+                email
+            }).select();
 
-            if (profileResponse?.error) throw profileResponse.error;
+            if (profileError) throw profileError;
 
             const stripe = createClientStripe();
 
@@ -76,13 +89,18 @@ export function SignUpForm({className, ...props}: React.ComponentPropsWithoutRef
             });
 
             // 3. Save stripe_customer_id to user profile
-            await supabase.from("profiles").update({
+            const responseUpdatedSubscription = await updateSupebaseUserSubscription({
                 stripe_customer_id: customer.id,
-            }).eq("id", userID);
+            }, profile[0].subscription_id);
 
-            if (error) throw error;
-
-            router.push('/')
+            if (responseUpdatedSubscription) {
+                showToast('You’ve created an account and logged in', 'success')
+                setUser(profile[0]);
+                setUserSubscription(responseUpdatedSubscription);
+            }
+            else {
+                showToast('Error occurred', 'error')
+            }
 
         } catch (error: unknown) {
             setError(error instanceof Error ? error.message : 'An error occurred')
